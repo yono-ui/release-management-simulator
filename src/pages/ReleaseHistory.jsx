@@ -1,11 +1,11 @@
 import React from 'react'
-import { loadState, saveState } from '../utils/storage'
+import { loadReleases, saveReleases, deleteRelease, updateRelease } from '../utils/storage'
 import ReleaseDetails from '../components/ReleaseDetails'
 import sampleData from '../data/sampleData'
 import '../styles/history.css'
 
 export default function ReleaseHistory(){
-  const [created, setCreated] = React.useState(() => loadState('createdReleases', []))
+  const [created, setCreated] = React.useState(() => loadReleases())
   const [all, setAll] = React.useState(() => merge(created))
 
   const [query, setQuery] = React.useState('')
@@ -17,7 +17,7 @@ export default function ReleaseHistory(){
 
   React.useEffect(() => {
     function handleUpdate(){
-      const updated = loadState('createdReleases', [])
+      const updated = loadReleases()
       setCreated(updated)
       setAll(merge(updated))
     }
@@ -48,30 +48,30 @@ export default function ReleaseHistory(){
   }
 
   function handleDelete(release){
-    const createdList = loadState('createdReleases', [])
+    const createdList = loadReleases()
     const exists = createdList.find(r => r.id === release.id)
     if(!exists){
       alert('Only releases you created in this session can be deleted.')
       return
     }
     if(!confirm(`Delete release ${release.version}? This cannot be undone.`)) return
-    const updated = createdList.filter(r => r.id !== release.id)
-    saveState('createdReleases', updated)
+    const updated = deleteRelease(release.id)
     setCreated(updated)
+    setAll(merge(updated))
     // notify others
     window.dispatchEvent(new CustomEvent('createdReleasesUpdated'))
   }
 
   function handleEditSave(updatedRelease){
-    const createdList = loadState('createdReleases', [])
+    const createdList = loadReleases()
     const exists = createdList.find(r => r.id === updatedRelease.id)
     if(!exists){
       alert('Only releases you created can be edited.')
       return
     }
-    const updated = createdList.map(r => r.id === updatedRelease.id ? updatedRelease : r)
-    saveState('createdReleases', updated)
+    const updated = updateRelease(updatedRelease)
     setCreated(updated)
+    setAll(merge(updated))
     window.dispatchEvent(new CustomEvent('createdReleasesUpdated'))
     setEditRelease(null)
   }
