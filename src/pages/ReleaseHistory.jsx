@@ -1,12 +1,11 @@
 import React from 'react'
-import { loadReleases, saveReleases, deleteRelease, updateRelease } from '../utils/storage'
+import { useReleases } from '../context/ReleasesContext'
 import ReleaseDetails from '../components/ReleaseDetails'
 import sampleData from '../data/sampleData'
 import '../styles/history.css'
 
 export default function ReleaseHistory(){
-  const [created, setCreated] = React.useState(() => loadReleases())
-  const [all, setAll] = React.useState(() => merge(created))
+  const { releases, deleteRelease, updateRelease, setSelectedId } = useReleases()
 
   const [query, setQuery] = React.useState('')
   const [typeFilter, setTypeFilter] = React.useState('all')
@@ -15,31 +14,8 @@ export default function ReleaseHistory(){
   const [viewRelease, setViewRelease] = React.useState(null)
   const [editRelease, setEditRelease] = React.useState(null)
 
-  React.useEffect(() => {
-    function handleUpdate(){
-      const updated = loadReleases()
-      setCreated(updated)
-      setAll(merge(updated))
-    }
-
-    // custom event dispatched by CreateRelease after saving
-    window.addEventListener('createdReleasesUpdated', handleUpdate)
-    return () => window.removeEventListener('createdReleasesUpdated', handleUpdate)
-  }, [])
-
-  React.useEffect(() => {
-    // update merged list when created changes
-    setAll(merge(created))
-  }, [created])
-
-  function merge(createdList){
-    // merge created (client) + sampleData releases; created first (newest on top)
-    const combined = [...createdList, ...sampleData.releases]
-    return combined.slice().sort((a,b)=> (b.date || '').localeCompare(a.date || ''))
-  }
-
   function filtered(){
-    return all.filter(r => {
+    return releases.filter(r => {
       if(query && !r.version.toLowerCase().includes(query.toLowerCase())) return false
       if(typeFilter !== 'all' && r.type !== typeFilter) return false
       if(statusFilter !== 'all' && r.status !== statusFilter) return false
@@ -48,32 +24,19 @@ export default function ReleaseHistory(){
   }
 
   function handleDelete(release){
-    const createdList = loadReleases()
-    const exists = createdList.find(r => r.id === release.id)
-    if(!exists){
-      alert('Only releases you created in this session can be deleted.')
-      return
-    }
+    // only deletable if present in created releases (id likely numeric and newer than sample data)
     if(!confirm(`Delete release ${release.version}? This cannot be undone.`)) return
-    const updated = deleteRelease(release.id)
-    setCreated(updated)
-    setAll(merge(updated))
-    // notify others
-    window.dispatchEvent(new CustomEvent('createdReleasesUpdated'))
+    deleteRelease(release.id)
   }
 
   function handleEditSave(updatedRelease){
-    const createdList = loadReleases()
-    const exists = createdList.find(r => r.id === updatedRelease.id)
-    if(!exists){
-      alert('Only releases you created can be edited.')
-      return
-    }
-    const updated = updateRelease(updatedRelease)
-    setCreated(updated)
-    setAll(merge(updated))
-    window.dispatchEvent(new CustomEvent('createdReleasesUpdated'))
+    updateRelease(updatedRelease)
     setEditRelease(null)
+  }
+
+  function handleView(release){
+    setSelectedId(release.id)
+    setViewRelease(release)
   }
 
   return (
@@ -119,7 +82,7 @@ export default function ReleaseHistory(){
                   <td className={`status ${r.status ? r.status.replace(' ', '-') : ''}`}>{r.status || '—'}</td>
                   <td>{changes}</td>
                   <td className="actions">
-                    <button className="btn-link" onClick={()=>setViewRelease(r)}>View</button>
+                    <button className="btn-link" onClick={()=>handleView(r)}>View</button>
                     <button className="btn-link" onClick={()=>setEditRelease(r)}>Edit</button>
                     <button className="btn-link text-danger" onClick={()=>handleDelete(r)}>Delete</button>
                   </td>
@@ -135,7 +98,7 @@ export default function ReleaseHistory(){
         <div className="modal-overlay">
           <div className="modal">
             <button className="modal-close" onClick={()=>setViewRelease(null)}>✕</button>
-            <ReleaseDetails release={viewRelease} onMarkReleased={(r)=>{ /* no-op here */ }} />
+            <ReleaseDetails release={viewRelease} />
           </div>
         </div>
       )}
