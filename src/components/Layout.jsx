@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard'
 import CreateRelease from './pages/CreateRelease'
 import ReleasePipeline from './pages/ReleasePipeline'
 import ReleaseHistory from './pages/ReleaseHistory'
++import ReleaseNotesPage from './pages/ReleaseNotes'
 
 export default function Layout(){
   const [page, setPage] = React.useState('dashboard')
@@ -15,6 +16,7 @@ export default function Layout(){
       case 'create': return <CreateRelease />
       case 'pipeline': return <ReleasePipeline />
       case 'history': return <ReleaseHistory />
++      case 'notes': return <ReleaseNotesPage />
       default: return <Dashboard />
     }
   }

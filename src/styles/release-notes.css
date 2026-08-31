@@ -1,0 +1,16 @@
+/* Release Notes page and component styles */
+
+.release-notes-page .muted{color:#6b7280;margin-top:-0.25rem}
+
+.rn-top{margin:1rem 0;display:flex;gap:1rem;align-items:center}
+.rn-top label{font-weight:600}
+.rn-top select{padding:0.5rem;border:1px solid #e6edf3;border-radius:6px}
+
+.rn-container{margin-top:1rem}
+
+.release-notes{background:#fff;padding:1rem;border-radius:8px;border:1px solid #e6edf3}
+.rn-header{display:flex;justify-content:space-between;align-items:center}
+.rn-actions{display:flex;gap:0.5rem}
+.rn-preview{white-space:pre-wrap;background:#f8fafc;padding:1rem;border-radius:6px;border:1px solid #eef2f7;margin-top:0.75rem}
+
+.btn{background:#eef2ff;border:1px solid #e6edf3;padding:0.45rem 0.75rem;border-radius:6px;cursor:pointer}
