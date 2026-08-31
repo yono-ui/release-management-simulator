@@ -1,0 +1,32 @@
+/* ReleaseDetails component styles - professional, clean layout */
+
+.release-details{background:#fff;border:1px solid #e6edf3;border-radius:8px;padding:1rem;box-shadow:0 1px 2px rgba(2,6,23,0.04)}
+.release-details.empty{color:#6b7280;padding:1rem}
+
+.rd-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;border-bottom:1px solid #eef2f7;padding-bottom:0.75rem}
+.rd-title{font-size:1.1rem;font-weight:700;color:#0f172a}
+.rd-subtitle{font-size:0.9rem;color:#475569}
+.rd-meta{text-align:right}
+.rd-date{font-size:0.9rem;color:#475569}
+.rd-status{margin-top:0.25rem;font-weight:700;padding:0.25rem 0.5rem;border-radius:6px;font-size:0.85rem;display:inline-block}
+.rd-status.released{background:#ecfdf5;color:#059669;border:1px solid #d1fae5}
+.rd-status.in-progress{background:#fff7ed;color:#92400e;border:1px solid #fde68a}
+.rd-status.planned{background:#f8fafc;color:#475569;border:1px solid #e6edf3}
+
+.rd-body{padding-top:0.75rem}
+.rd-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+.rd-section h4{margin:0 0 0.5rem 0;font-size:0.95rem}
+.rd-section ul{margin:0;padding-left:1.25rem}
+.rd-section li{margin-bottom:0.5rem}
+.muted{color:#6b7280}
+
+.rd-actions{display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:1rem}
+.btn{background:#eef2ff;border:1px solid #e6edf3;padding:0.5rem 0.75rem;border-radius:6px;cursor:pointer}
+.btn[disabled]{opacity:0.5;cursor:not-allowed}
+.btn-primary{background:#2563eb;color:#fff;border:none;padding:0.5rem 0.85rem;border-radius:6px;cursor:pointer}
+
+@media (max-width: 900px){
+  .rd-grid{grid-template-columns:1fr}
+  .rd-meta{text-align:left}
+  .rd-header{flex-direction:column;align-items:flex-start}
+}
